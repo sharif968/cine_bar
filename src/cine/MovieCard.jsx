@@ -1,11 +1,16 @@
 /* eslint-disable react/prop-types */
 import { getImgUrl } from "../utils/cine-utility";
 import Rating from "./Rating";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import MovieDetailsModal from "./MovieDetailsModal";
+import { MovieContex } from "../contex";
+import { toast } from "react-toastify";
 export default function MovieCard({ movie }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const { cartData, setCartData } = useContext(MovieContex);
+
   function handleModalClose() {
     setShowModal(false);
     setSelectedMovie(null);
@@ -14,10 +19,33 @@ export default function MovieCard({ movie }) {
     setSelectedMovie(movie);
     setShowModal(true);
   }
+
+  function handleAddToCart(event, movie) {
+    event.stopPropagation();
+    const found = cartData.find((item) => {
+      return item.id === movie.id;
+    });
+    if (!found) {
+      setCartData([...cartData, movie]);
+      {
+        toast.success(`The movie ${movie.title}has been added to the cart`, {
+          position: "top-center",
+        });
+      }
+    } else {
+      toast.warning(
+        `The movie ${movie.title}has been already added to the cart`
+      );
+    }
+  }
   return (
     <>
       {showModal && (
-        <MovieDetailsModal movie={selectedMovie} onClose={handleModalClose} />
+        <MovieDetailsModal
+          movie={selectedMovie}
+          onClose={handleModalClose}
+          onCartAdd={handleAddToCart}
+        />
       )}
 
       <figure className="p-4 border border-black/10 shadow-sm dark:border-white/10 rounded-xl">
@@ -35,8 +63,11 @@ export default function MovieCard({ movie }) {
               <Rating rating={movie.rating} />
             </div>
             <a
-              className="bg-primary rounded-lg py-2 px-5 flex items-center justify-center gap-2 text-[#171923] font-semibold text-sm"
+              className="bg-primary rounded-full py-2 px-5 flex items-center justify-center  gap-2 text-[#171923] font-semibold text-sm"
               href="#"
+              onClick={(e) => {
+                handleAddToCart(e, movie);
+              }}
             >
               <img src="./assets/tag.svg" alt="" />
               <span>${movie.price} | Add to Cart</span>

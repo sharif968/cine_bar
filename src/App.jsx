@@ -1,20 +1,19 @@
-import MovieList from "./cine/MovieList";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import SideBar from "./components/SideBar";
+import { useState } from "react";
+import { MovieContex, ThemeContex } from "./contex";
+import Page from "./components/Page";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  const [cartData, setCartData] = useState([]);
+  const [darkMode, setDarkMode] = useState(true);
   return (
-    <div className="mx-10 ">
-      <Header />
-      <main>
-        <div className="container grid lg:grid-cols-[218px_1fr] gap-[3.5rem]">
-          <SideBar />
-          <MovieList />
-        </div>
-      </main>
-      <Footer />
-    </div>
+    <ThemeContex.Provider value={{ darkMode, setDarkMode }}>
+      <MovieContex.Provider value={{ cartData, setCartData }}>
+        <Page />
+        <ToastContainer />
+      </MovieContex.Provider>
+    </ThemeContex.Provider>
   );
 }
 
