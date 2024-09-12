@@ -6,13 +6,13 @@ import CheckOut from "../assets/icons/checkout.svg"
 import { toast } from "react-toastify";
 import  Delete  from "../assets/delete.svg";
 export default function CartDetails({ onClose }) {
-  // eslint-disable-next-line no-unused-vars
   const { cartData, setCartData } = useContext(MovieContex);
   function handleDeleteCart(event, movieId) {
     event.preventDefault();
 
     const filteredItem = cartData.filter((item) => {
-      return item.id !== movieId;
+      return item.id !== movieId; 
+      
     });
 
     setCartData([...filteredItem]);
